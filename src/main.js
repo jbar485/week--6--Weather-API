@@ -1,28 +1,45 @@
-// import { MyLetters, Poem} from  './dice-game.js';
+import { WeatherService } from  './weather.js';
 import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
+
+// $(document).ready(function() {
+//   $('#weatherLocation').click(function() {
+//     const city = $('#location').val();
+//     $('#location').val("");
+//
+//       fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.API_KEY}`)
+//         .then(function(response){
+//           return response.json();
+//         })
+//         .then(function(jsonifiedResponse){
+//           getElements(jsonifiedResponse);
+//         });
+//
+//    const getElements = function(response) {
+//       $('.showHumidity').text(`The humidity in ${city} is ${response.main.humidity}%`);
+//       $('.showTemp').text(`The temperature in Kelvins is ${response.main.temp} degrees.`);
+//       $('.showClouds').text(`The cloudiness level in clouds is ${response.clouds.all} clouds.`);
+//     }
+//   });
+// });
+//
 
 $(document).ready(function() {
   $('#weatherLocation').click(function() {
     const city = $('#location').val();
     $('#location').val("");
 
-    let request = new XMLHttpRequest();
-    const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.API_KEY}`;
+    // asyncApiCall();
 
-    request.onreadystatechange = function() {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    }
+    (async () => {
+      let weatherService = new WeatherService();
+      const response = await weatherService.getWeatherByCity(city);
+      getElements(response);
+    })();
 
-    request.open("GET", url, true);
-    request.send();
-
-   const getElements = function(response) {
+    function getElements(response) {
       $('.showHumidity').text(`The humidity in ${city} is ${response.main.humidity}%`);
       $('.showTemp').text(`The temperature in Kelvins is ${response.main.temp} degrees.`);
       $('.showClouds').text(`The cloudiness level in clouds is ${response.clouds.all} clouds.`);
